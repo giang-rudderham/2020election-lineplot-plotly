@@ -1,0 +1,113 @@
+---
+title: "Creating Interactive Line Plots Using Plotly"
+author: "Giang Rudderham, University of Iowa"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Development Notes
+
+These are notes for yourself while you're working on your tutorial - remove them later.
+
+## Topic
+
+What's your topic?
+
+* Language or Program: R
+* Tutorial Type (Task, Technique, Package Overview, Tool): Task
+* Specific Package/Task/Technique/Tool: Creating interactive line plots using plotly
+
+
+# Introduction
+
+In this tutorial, we will cover how to create an interactive line plot using the package `plotly` in R.
+
+## Setup
+
+The package `plotly` allows us to create interactive data visualization with no required knowledge of web publishing. 
+
+For this tutorial, we will use the polling data for the presidential election 2020 from fivethirtyeight.com
+
+First, load the `tidyverse` and `plotly` packages. We will use these two packages to clean, shape the data and then create the visualization.
+
+Then read the dataset as a csv.
+
+```{r}
+library(plotly)
+library(tidyverse)
+
+df <- read.csv("https://github.com/giang-rudderham/2020election-lineplot-plotly/blob/ce17e8336d1c692f57d577468c76da78e72aa611/president_polls.csv", stringsAsFactors = F)
+
+```
+
+
+# Section 1: Filter to keep only the data we need  
+
+Change the section title to what this section is about.
+
+Write examples to teach them the concept they're going to do an exercise about.  The teaching materials should include code that they can copy and paste to help them start to answer the exercise, especially for the first exercise.  
+
+Only put 1-2 commands per code chunk.  You'll want to show the output of every command, and even sometimes parts of commands, so separate out commands into separate chunks.
+
+
+
+## EXERCISE 1
+
+Explain what you want them to do.
+
+Remind them to run the setup code above they may need.
+
+Give them an empty chunk to fill in, or put any starter code in the exercise code chunk.
+
+When you're developing the tutorial, it's often useful to write the answer here in this file.  Then this ultimately can become the answer key/your notes, and you can make a copy and delete the answers to make a version to share with others.
+
+```{r}
+# filter to keep only Joe Biden and Donald Trump
+df_final_candidates <- filter(df, candidate_id %in% c(13256, 13254))
+# filter to get rid of pollsters that have D- rating by Five Thirty Eight
+df_final_candidates <- filter(df_final_candidates, fte_grade != "D-")
+```
+
+
+# Section 2: Convert to date format
+
+Same directions as above
+
+## EXERCISE 2
+
+Keep the formatting consistent with previous sections.  Keep "Exercise" sections all at the same header depth (## or ###).  
+
+```{r}
+# convert end_date to date format
+df_final_candidates <- mutate(df_final_candidates, end_date_fmt = as.Date(end_date, format = "%m/%d/%y"))
+              
+
+```
+
+
+# Section 3: 
+```{r}
+# group by and summarise to get averages of all polls for each end date
+df_plot <- df_final_candidates %>%
+  group_by(end_date_fmt, answer) %>%
+  summarise(mean_pct = mean(pct, na.rm = T))
+  
+```
+# Additional Sections
+
+Copy the same format from above for a total of 3-6 sections.  
+
+
+
+# Wrap-up
+
+Remind folks of what they've learned.
+
+Where can they learn more?
+
+
+
+
