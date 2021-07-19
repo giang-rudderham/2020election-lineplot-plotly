@@ -27,11 +27,11 @@ In this tutorial, we will cover how to create an interactive line plot using the
 
 ## Setup
 
-The package `plotly` allows us to create interactive data visualization with no required knowledge of web publishing. 
+The package `plotly` allows us to create interactive data visualizations with no required knowledge of web publishing. 
 
 For this tutorial, we will use the polling data for the presidential election 2020 from fivethirtyeight.com
 
-First, load the `tidyverse` and `plotly` packages. We will use these two packages to clean, shape the data and then create the visualization.
+First, load the `tidyverse` and `plotly` packages. We will use these two packages to clean and shape the data and then create the visualization.
 
 Then read the dataset as a csv.
 
@@ -39,52 +39,59 @@ Then read the dataset as a csv.
 library(plotly)
 library(tidyverse)
 
-df <- read.csv("https://github.com/giang-rudderham/2020election-lineplot-plotly/blob/ce17e8336d1c692f57d577468c76da78e72aa611/president_polls.csv", stringsAsFactors = F)
+df <- read.csv("president_polls.csv", stringsAsFactors = F)
 
 ```
 
 
 # Section 1: Filter to keep only the data we need  
 
-Change the section title to what this section is about.
+First, let's keep only the candidates from the 2 major political parties.
 
-Write examples to teach them the concept they're going to do an exercise about.  The teaching materials should include code that they can copy and paste to help them start to answer the exercise, especially for the first exercise.  
+We will use the `filter` function in the package `tidyverse` to filter and keep those 2 candidates.
 
-Only put 1-2 commands per code chunk.  You'll want to show the output of every command, and even sometimes parts of commands, so separate out commands into separate chunks.
-
-
-
-## EXERCISE 1
-
-Explain what you want them to do.
-
-Remind them to run the setup code above they may need.
-
-Give them an empty chunk to fill in, or put any starter code in the exercise code chunk.
-
-When you're developing the tutorial, it's often useful to write the answer here in this file.  Then this ultimately can become the answer key/your notes, and you can make a copy and delete the answers to make a version to share with others.
+Make sure you have run the code in the "Set Up" section above.
 
 ```{r}
 # filter to keep only Joe Biden and Donald Trump
 df_final_candidates <- filter(df, candidate_id %in% c(13256, 13254))
+
+```
+
+
+## EXERCISE 1
+
+Five Thirty Eight rates the quality of each pollster on a scale of A (best) to D- (worst).
+
+Using the `filter` function, get rid of pollsters that have D- rating by Five Thirty Eight.
+
+Make sure you have run the code in the "Set Up" section above.
+
+```{r}
 # filter to get rid of pollsters that have D- rating by Five Thirty Eight
 df_final_candidates <- filter(df_final_candidates, fte_grade != "D-")
 ```
 
 
-# Section 2: Convert to date format
+# Section 2: Convert date variables to date format
 
-Same directions as above
+In order to use a date variable to create a data visualization, we first need to make sure that the variable has date format.
+
+For example, here we convert the `start_date` variable to a date format:
+
+```{r}
+# convert start_date to date format
+df_final_candidates <- mutate(df_final_candidates, start_date_fmt = as.Date(start_date, format = "%m/%d/%y"))
+              
+```
 
 ## EXERCISE 2
 
-Keep the formatting consistent with previous sections.  Keep "Exercise" sections all at the same header depth (## or ###).  
+Using the `as.Date` function, convert the variable `end_date` to a date format.
 
 ```{r}
 # convert end_date to date format
 df_final_candidates <- mutate(df_final_candidates, end_date_fmt = as.Date(end_date, format = "%m/%d/%y"))
-              
-
 ```
 
 
