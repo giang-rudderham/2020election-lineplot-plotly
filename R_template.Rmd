@@ -95,7 +95,8 @@ df_final_candidates <- mutate(df_final_candidates, end_date_fmt = as.Date(end_da
 ```
 
 
-# Section 3: 
+# Section 3: Get Averages for Each Date
+
 ```{r}
 # group by and summarise to get averages of all polls for each end date
 df_plot <- df_final_candidates %>%
@@ -103,9 +104,36 @@ df_plot <- df_final_candidates %>%
   summarise(mean_pct = mean(pct, na.rm = T))
   
 ```
-# Additional Sections
 
-Copy the same format from above for a total of 3-6 sections.  
+# Section 4: Calculate Rolling Averages
+
+```{r}
+# calculate 14-day simple rolling averages
+df_plot <- df_plot %>%
+  group_by(answer) %>%
+  mutate(rolling_mean_pct = zoo::rollmean(mean_pct, k = 14, fill = NA, align = "right")) %>%
+  ungroup()
+```
+               
+# Section 5: Create the Plot
+
+```{r}
+# create color palette 
+pal <- c("#0571b0", "#ca0020")
+
+# create the plot
+p <- plot_ly(df_plot, x = ~end_date_fmt, y = ~mean_pct, type = "scatter", mode = "markers", 
+             color = ~answer, colors = pal, opacity = 0.25, hoverinfo = "none", showlegend = F) %>%
+  add_trace(y = ~rolling_mean_pct, type = "scatter", mode = "lines", color = ~answer, colors = pal, 
+            opacity = 1, hoverinfo = "all", hovertemplate = paste0("%{x}:<br>", "%{y:.1f}%"),
+            showlegend = T) %>%
+  layout(title = "<b>Presidential General Election Polls</b><br>14-Day SMA. Data Updated Oct 7, 2020",
+         xaxis = list(title = ""),
+         yaxis = list(title = ""),
+         hovermode = "x unified")
+  
+p
+```
 
 
 
